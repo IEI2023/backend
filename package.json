@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "convert-csv-to-json": "^2.0.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.17.2",
+    "mysql": "^2.14.1",
+    "mysql2": "^3.6.2",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "0.3.17",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.10",
+    "ts-node": "10.7.0",
+    "typescript": "4.5.2"
+  },
+  "scripts": {
+    "dev": "docker-compose up -d && nodemon --exec ts-node src/index.ts",
+    "remove": "docker-compose down",
+    "start": "ts-node src/index.ts",
+    "typeorm": "typeorm-ts-node-commonjs"
+  }
+}
