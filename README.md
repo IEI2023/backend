@@ -1,7 +1,9 @@
-# Awesome Project Build with TypeORM
+# API IEI - Mapping y Busqueda
 
-Steps to run this project:
+El objetivo de este proyecto es tener una API con la cual podremos insertar datos en formato:
 
-1. Run `npm i` command
-2. Setup database settings inside `data-source.ts` file
-3. Run `npm start` command
+- XML
+- CSV
+- JSON
+
+De forma que todos los datos se
