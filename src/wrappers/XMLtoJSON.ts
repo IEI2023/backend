@@ -24,8 +24,8 @@ class XMLtoJSON {
   public convertAndSaveJSON(outputFilePath: string): void {
     try {
       const data = this.readXMLFile();
-      const mappedData = this.mapData(data);
-      fs.writeFileSync(outputFilePath, JSON.stringify(mappedData, null, 2));
+      //const mappedData = this.mapData(data); se hace en un documento a parte
+      fs.writeFileSync(outputFilePath, JSON.stringify(data, null, 2));
       console.log(`JSON file saved at: ${outputFilePath}`);
     } catch (error) {
       console.error("Error:", error);
