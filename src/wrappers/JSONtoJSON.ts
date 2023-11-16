@@ -45,9 +45,11 @@ class JSONtoJSON {
         !item.CE_tipo ||
         !item.CE_direccion ||
         !item.CE_codigo_postal ||
+        item.CE_codigo_postal.length !== 5 ||
         !item.CE_longitud ||
         !item.CE_latitud ||
         !item.CE_telefono ||
+        item.CE_telefono.length !== 9 ||
         !item.CE_descripcion ||
         !item.L_nombre ||
         !item.P_codigo ||
