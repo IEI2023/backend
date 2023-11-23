@@ -1,39 +1,62 @@
 class Mapper {
-  public static transformarComunidadValenciana(centro: CentroEducativo): any {
-    const resultado: any = {};
+  
+  private constructor(){}
 
-    resultado.denominacion = centro.nombre;
-    resultado.CODIGO_POSTAL = centro.codigo_postal;
+  public mapData(data:JSON){}
 
-    // Transformar tipo
-    switch (centro.tipo) {
-      case "Público":
-        resultado.tipo = "PÚB.";
-        break;
-      case "Concertado":
-        resultado.tipo = "PRIV. CONC.";
-        break;
-      case "Privados":
-        resultado.tipo = "PRIV.";
-        break;
-      default:
-        resultado.tipo = "OTROS";
-        break;
+  //PENDIENTE DE CAMBIAR
+  private filterDataFormat(data: any[]){
+    return data.map((row) => ({
+      CE_nombre: row.DENOMINACION,
+      CE_tipo: this.getTipo(row.REGIMEN),
+      CE_direccion: `${row.TIPO_VIA} ${row.DIRECCION} ${row.NUMERO}`,
+      CE_codigo_postal: row.CODIGO_POSTAL,
+      //CE_longitud: this.getLongitud(row.TIPO_VIA, row.DIRECCION, row.NUMERO),
+      //CE_latitud: this.getLatitud(row.TIPO_VIA, row.DIRECCION, row.NUMERO),
+      CE_telefono: row.TELEFONO,
+      CE_descripcion: row.DESCRIPCION,
+      L_codigo: row.CODIGO_POSTAL,
+      L_nombre: row.LOCALIDAD,
+      //P_codigo: this.getProvinceCode(row.CODIGO_POSTAL),
+      //P_nombre: this.getProvinceName(row.PROVINCIA),
+    }));
+
+
+  }//filterDataFormat
+
+  private filterDuplicates(data: any[]) {
+  
+  
+  }//filterDuplicates
+
+  
+  private getTipo(tipo:string){
+    switch (tipo) {
+      case "Públic.":
+        return "Público";
+      case "Privat.":
+        return "Privado";
     }
-
-    // Concatenar dirección
-    resultado.DIRECCION = `${centro.direccion} ${centro.numero}`;
-
-    // Extraer coordenadas
-    resultado.COORDENADAS = Mapper.obtenerCoordenadas(
-      centro.longitud,
-      centro.latitud
-    );
-
-    return resultado;
   }
 
-  private static obtenerCoordenadas(longitud: string, latitud: string): string {
-    return `${longitud},${latitud}`;
+  private getCodigoProvincia(codigoPostal:string){
+    const provinciaCode = parseInt(codigoPostal.substring(0, 2), 10);
+    return provinciaCode;
   }
-}
+
+  private NombreProvincia(codigoPostal:string){
+    let codProv = this.getCodigoProvincia(codigoPostal)
+    switch (codProv) {
+      case 8:
+        return "GERONA";
+      case 17:
+        return "TARRAGONA";
+      case 25:
+        return "BARCELONA";
+      case 43:
+          return "LÉRIDA";
+    }
+  }
+
+
+}//Mapper
