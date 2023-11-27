@@ -6,26 +6,50 @@ class Mapper {
 
   //PENDIENTE DE CAMBIAR
   private filterDataFormat(data: any[]){
-    return data.map((row) => ({
-      CE_nombre: row.DENOMINACION,
-      CE_tipo: this.getTipo(row.REGIMEN),
-      CE_direccion: `${row.TIPO_VIA} ${row.DIRECCION} ${row.NUMERO}`,
-      CE_codigo_postal: row.CODIGO_POSTAL,
-      //CE_longitud: this.getLongitud(row.TIPO_VIA, row.DIRECCION, row.NUMERO),
-      //CE_latitud: this.getLatitud(row.TIPO_VIA, row.DIRECCION, row.NUMERO),
-      CE_telefono: row.TELEFONO,
-      CE_descripcion: row.DESCRIPCION,
-      L_codigo: row.CODIGO_POSTAL,
-      L_nombre: row.LOCALIDAD,
-      //P_codigo: this.getProvinceCode(row.CODIGO_POSTAL),
-      //P_nombre: this.getProvinceName(row.PROVINCIA),
-    }));
+    //rowNested solo será 0
+    return data.map(rowNested => rowNested.map((row) => ({
+          CE_nombre: row.denominaci_completa[0],
+          CE_tipo: this.getTipo(row.nom_naturalesa[0]),
+          CE_direccion: row.adre_a[0],
+          CE_codigo_postal: row.CODIGO_POSTAL,
+          CE_longitud: row.coordenades_geo_x[0],
+          CE_latitud: row.coordenades_geo_y[0],
+          CE_descripcion: row.denominaci_completa[0],
 
-
+          //Cambiar por código generado por la DB
+          L_codigo: row.codi_postal[0],
+          
+          L_nombre: row.nom_municipi[0],
+          P_codigo: this.getCodigoProvincia(row.CODIGO_POSTAL[0]),
+          P_nombre: this.getNombreProvincia(row.PROVINCIA[0]),
+          }
+        ) 
+      )
+    );
   }//filterDataFormat
 
   private filterDuplicates(data: any[]) {
-  
+    const uniqueData = [];
+
+    for (const item of data) {
+      if (
+        !item.CE_nombre ||
+        !item.CE_tipo ||
+        !item.CE_direccion ||
+        !item.CE_codigo_postal ||
+        !item.CE_longitud ||
+        !item.CE_latitud ||
+        !item.L_nombre ||
+        !item.P_codigo ||
+        !item.P_nombre
+      ) {
+        console.warn("Registro con campos faltantes, omitiendo:", item);
+        continue;
+      }
+    }
+
+    const uniqueDataWithoutCode = uniqueData.map(({ CODIGO, ...rest }) => rest);
+    return uniqueDataWithoutCode;
   
   }//filterDuplicates
 
@@ -44,7 +68,7 @@ class Mapper {
     return provinciaCode;
   }
 
-  private NombreProvincia(codigoPostal:string){
+  private getNombreProvincia(codigoPostal:string){
     let codProv = this.getCodigoProvincia(codigoPostal)
     switch (codProv) {
       case 8:
@@ -54,9 +78,8 @@ class Mapper {
       case 25:
         return "BARCELONA";
       case 43:
-          return "LÉRIDA";
+        return "LÉRIDA";
     }
   }
-
 
 }//Mapper
