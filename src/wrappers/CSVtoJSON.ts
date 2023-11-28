@@ -3,11 +3,9 @@ import { csvToJson } from "convert-csv-to-json";
 
 class CSVtoJSON {
   private csvfilePath: string;
-  private jsonFilePath: string;
 
-  constructor(csvFilePath: string, jsonFilePath: string) {
+  constructor(csvFilePath: string) {
     this.csvfilePath = csvFilePath;
-    this.jsonFilePath = jsonFilePath;
   }
 
   private readCSVFile(): any[] {
