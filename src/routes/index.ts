@@ -16,7 +16,7 @@ router.get("/", (req: Request, res: Response) => {
   res
     .status(200)
     .header("Content-Type", "text/html")
-    .send(`<h4>🙌 RESTful API PIN 👀</h4>`);
+    .send(`<h4>🙌 RESTful API IEI 👀</h4>`);
 });
 
 readdirSync(__dirname).filter((file) => {
