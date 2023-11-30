@@ -81,7 +81,7 @@ class MurMapper {
   private validateMappedRow(row: any, centroNombre: string): string[] {
     const errors = [];
 
-    if (!row.CODIGO) errors.push(`Falta el campo CODIGO en ${centroNombre}`);
+    //if (!row.CODIGO) errors.push(`Falta el campo CODIGO en ${centroNombre}`);
     if (!row.CE_nombre)
       errors.push(`Falta el campo CE_nombre en ${centroNombre}`);
     if (!row.CE_tipo) errors.push(`Falta el campo CE_tipo en ${centroNombre}`);
@@ -95,10 +95,10 @@ class MurMapper {
       errors.push(`Falta el campo CE_latitud en ${centroNombre}.`);
     if (!row.L_nombre)
       errors.push(`Falta el campo L_nombre en ${centroNombre}.`);
-    if (!row.P_codigo)
-      errors.push(`Falta el campo P_codigo en ${centroNombre}.`);
-    if (!row.P_nombre)
-      errors.push(`Falta el campo P_nombre en ${centroNombre}.`);
+    //if (!row.P_codigo)
+    //  errors.push(`Falta el campo P_codigo en ${centroNombre}.`);
+    //if (!row.P_nombre)
+    //  errors.push(`Falta el campo P_nombre en ${centroNombre}.`);
 
     return errors;
   }
