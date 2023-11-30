@@ -13,7 +13,7 @@ class CatMapper {
       CE_codigo_postal: row.codi_postal,
       CE_longitud: row.coordenades_geo_x, // creo que dijo que usáramos geo
       CE_latitud: row.coordenades_geo_y,
-      CE_telefono: 000000000, // no está en el dataset
+      CE_telefono: 123456789, // no está en el dataset
       CE_descripcion: row.denominaci_completa,
       L_codigo: row.codi_municipi_6_digits,
       L_nombre: row.nom_municipi,
