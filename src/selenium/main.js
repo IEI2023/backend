@@ -40,11 +40,33 @@ async function getCoordinates(address) {
       )
       .click();
 
+    /** 
     console.log("Obteniendo nuevas coordenadas...");
     lat = await driver.findElement(By.id("latitude")).getAttribute("value");
     lon = await driver.findElement(By.id("longitude")).getAttribute("value");
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
+    */
+
+    for (let i = 0; i < 10; i++) {
+      console.log(
+        "Observando cambios de valores... intento " + (i + 1) + "/10"
+      );
+
+      lat = await driver.findElement(By.id("latitude")).getAttribute("value");
+      lon = await driver.findElement(By.id("longitude")).getAttribute("value");
+
+      if (
+        lat !== "" &&
+        lon !== "" &&
+        lat !== previus_lat &&
+        lon !== previus_lon
+      ) {
+        break;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
 
     return { lat, lon };
   } catch (error) {
@@ -55,3 +77,13 @@ async function getCoordinates(address) {
 }
 
 module.exports = { getCoordinates };
+
+//Ejemplo de uso
+/*
+(async () => {
+  const coordinates = await getCoordinates(
+    "Camino de la Silla, 30835 Alcantarilla, España"
+  );
+  console.log(coordinates);
+})();
+*/
