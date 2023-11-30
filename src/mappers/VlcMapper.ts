@@ -16,17 +16,25 @@ class VlcMapper {
     data: any[],
     result: { data: any[]; errors: any[] }
   ) {
-    const mappedDataPromises = data.map(async (row) => {
+    const mappedData = [];
+    for (const row of data) {
       console.log(`${row.TIPO_VIA} ${row.DIRECCION} ${row.NUMERO}`);
-      const coordinatesPromise = getCoordinates(
-        `${row.TIPO_VIA} ${row.DIRECCION} ${row.NUMERO}`
-      );
-
+      let coordinatesPromise = null;
+      (async () => {
+        coordinatesPromise = getCoordinates(
+          `${row.TIPO_VIA} ${row.DIRECCION} ${row.NUMERO}`
+        );
+      })();
       const coordinates = await coordinatesPromise;
 
-      console.log(coordinates);
+      if (!coordinates) {
+        result.errors.push(
+          `No se ha podido encontrar las coordenadas para ${row.DENOMINACION}`
+        );
+        continue;
+      }
 
-      const mappedRow = await {
+      const mappedRow = {
         CE_nombre: row.DENOMINACION,
         CE_tipo: this.getTipo(row.REGIMEN),
         CE_direccion: `${row.TIPO_VIA} ${row.DIRECCION} ${row.NUMERO}`,
@@ -47,16 +55,14 @@ class VlcMapper {
         row.DENOMINACION
       );
       if (validationErrors.length === 0) {
-        return mappedRow;
+        mappedData.push(mappedRow);
       } else {
         for (const error of validationErrors) {
           result.errors.push(error);
         }
-        return null;
+        continue;
       }
-    });
-
-    const mappedData = await Promise.all(mappedDataPromises);
+    }
 
     // Filtrar registros duplicados basados en el el nombre y codigo postal
     const uniqueData = [];
