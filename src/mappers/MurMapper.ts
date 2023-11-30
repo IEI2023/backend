@@ -51,7 +51,6 @@ class MurMapper {
     });
 
     // Filtrar registros duplicados basados en el campo CODIGO
-    const uniqueData = [];
     const seenCodes = new Set();
     const localidades = [];
 
