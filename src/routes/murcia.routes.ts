@@ -3,7 +3,7 @@ import * as murciaController from "../controller/murcia.controller";
 
 const router = Router();
 
-router.post("/", murciaController.getAll);
-router.post("/add", murciaController.add);
+router.get("/", murciaController.getAll);
+router.post("/", murciaController.add);
 
 export default router;
