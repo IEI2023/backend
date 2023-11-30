@@ -7,7 +7,6 @@ import {
   ManyToOne,
   OneToMany,
 } from "typeorm";
-import { Tipo } from "./Tipo";
 import { Localidad } from "./Localidad";
 
 @Entity()
@@ -30,20 +29,20 @@ export class CentroEducativo {
   @Column()
   latitud: number;
 
-  @Column()
+  @Column({ nullable: true })
   telefono: string;
 
-  @Column()
+  @Column({ nullable: true })
   descripcion: string;
+
+  @Column()
+  tipo: string;
 
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @ManyToOne(() => Tipo, (tipo) => tipo.schools)
-  tipo: Tipo;
 
   @ManyToOne(() => Localidad, (localidad) => localidad.centroEducativo)
   localidad: Localidad;

@@ -13,10 +13,10 @@ export class Provincia {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
+  @Column()
   codigo: number;
 
-  @Column({ nullable: true })
+  @Column()
   nombre: string;
 
   @CreateDateColumn()
