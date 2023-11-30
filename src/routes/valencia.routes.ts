@@ -1,9 +1,9 @@
 import { Router } from "express";
-import * as murciaController from "../controller/murcia.controller";
+import * as valenciaController from "../controller/valencia.controller";
 
 const router = Router();
 
-router.post("/", murciaController.getAll);
-router.post("/add", murciaController.add);
+router.get("/", valenciaController.getAll);
+router.post("/", valenciaController.add);
 
 export default router;

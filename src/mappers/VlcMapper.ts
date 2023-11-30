@@ -1,49 +1,115 @@
+import { getCoordinates } from "../selenium/main";
+
 class VlcMapper {
-  private constructor() {}
+  public async mapData(data: any[]) {
+    const result = {
+      data: [],
+      errors: [],
+    };
 
-  public mapData(data: JSON) {}
+    await this.filterDataFormat(data, result);
 
-  private filterDataFormat(data: any[]) {
-    return data.map((row) => ({
-      CE_nombre: row.DENOMINACION,
-      CE_tipo: this.getTipo(row.REGIMEN),
-      CE_direccion: `${row.TIPO_VIA} ${row.DIRECCION} ${row.NUMERO}`,
-      CE_codigo_postal: row.CODIGO_POSTAL,
-      CE_longitud: this.getLongitud(row.TIPO_VIA, row.DIRECCION, row.NUMERO),
-      CE_latitud: this.getLatitud(row.TIPO_VIA, row.DIRECCION, row.NUMERO),
-      CE_telefono: row.TELEFONO,
-      CE_descripcion: row.DESCRIPCION,
-      L_codigo: row.CODIGO_POSTAL,
-      L_nombre: row.LOCALIDAD,
-      P_codigo: this.getProvinceCode(row.CODIGO_POSTAL),
-      P_nombre: this.getProvinceName(row.PROVINCIA),
-    }));
+    return result;
   }
 
-  private filterDuplicates(data: any[]) {
-    const uniqueData = [];
+  private async filterDataFormat(
+    data: any[],
+    result: { data: any[]; errors: any[] }
+  ) {
+    const mappedDataPromises = data.map(async (row) => {
+      console.log(`${row.TIPO_VIA} ${row.DIRECCION} ${row.NUMERO}`);
+      const coordinatesPromise = getCoordinates(
+        `${row.TIPO_VIA} ${row.DIRECCION} ${row.NUMERO}`
+      );
 
-    for (const item of data) {
-      if (
-        !item.CE_nombre ||
-        !item.CE_tipo ||
-        !item.CE_direccion ||
-        !item.CE_codigo_postal ||
-        item.CE_codigo_postal.length !== 5 ||
-        !item.CE_longitud ||
-        !item.CE_latitud ||
-        item.CE_telefono.length !== 9 ||
-        !item.L_nombre ||
-        !item.P_codigo ||
-        !item.P_nombre
-      ) {
-        console.warn("Registro con campos faltantes, omitiendo:", item);
-        continue;
+      const coordinates = await coordinatesPromise;
+
+      console.log(coordinates);
+
+      const mappedRow = await {
+        CE_nombre: row.DENOMINACION,
+        CE_tipo: this.getTipo(row.REGIMEN),
+        CE_direccion: `${row.TIPO_VIA} ${row.DIRECCION} ${row.NUMERO}`,
+        CE_codigo_postal: this.checkCP(row.CODIGO_POSTAL),
+        CE_longitud: coordinates.lon,
+        CE_latitud: coordinates.lat,
+        CE_telefono: row.TELEFONO,
+        CE_descripcion: row.DESCRIPCION,
+        L_codigo: row.CODIGO_POSTAL,
+        L_nombre: row.LOCALIDAD,
+        P_codigo: this.getProvinceCode(row.CODIGO_POSTAL),
+        P_nombre: this.getProvinceName(row.PROVINCIA),
+      };
+
+      // Validaciones
+      const validationErrors = this.validateMappedRow(
+        mappedRow,
+        row.DENOMINACION
+      );
+      if (validationErrors.length === 0) {
+        return mappedRow;
+      } else {
+        for (const error of validationErrors) {
+          result.errors.push(error);
+        }
+        return null;
+      }
+    });
+
+    const mappedData = await Promise.all(mappedDataPromises);
+
+    // Filtrar registros duplicados basados en el el nombre y codigo postal
+    const uniqueData = [];
+    const seenCodes = new Set();
+
+    for (const item of mappedData) {
+      if (!item) {
+        continue; // Skip null items (errored rows)
+      }
+
+      const key = `${(await item).CE_nombre}-${(await item).CE_codigo_postal}`;
+
+      if (!seenCodes.has(key)) {
+        seenCodes.add(key);
+        result.data.push(item);
+      } else {
+        result.errors.push(
+          `Registro duplicado, omitiendo: ${(await item).CE_nombre}`
+        );
       }
     }
+  }
 
-    const uniqueDataWithoutCode = uniqueData.map(({ CODIGO, ...rest }) => rest);
-    return uniqueDataWithoutCode;
+  checkCP(CODIGO_POSTAL: any) {
+    if (CODIGO_POSTAL.length < 5) {
+      const cerosFaltantes = 5 - CODIGO_POSTAL.length;
+      CODIGO_POSTAL = "0".repeat(cerosFaltantes) + CODIGO_POSTAL;
+    }
+    return CODIGO_POSTAL;
+  }
+
+  private validateMappedRow(row: any, centroNombre: string): string[] {
+    const errors = [];
+
+    if (!row.CE_nombre)
+      errors.push(`Falta el campo CE_nombre en ${centroNombre}`);
+    if (!row.CE_tipo) errors.push(`Falta el campo CE_tipo en ${centroNombre}`);
+    if (!row.CE_direccion)
+      errors.push(`Falta el campo CE_direccion en ${centroNombre}`);
+    if (!row.CE_codigo_postal || row.CE_codigo_postal.length !== 5)
+      errors.push(`El campo CE_codigo_postal es inválido en ${centroNombre}.`);
+    if (row.CE_longitud === null || row.CE_longitud === undefined)
+      errors.push(`Falta el campo CE_longitud en ${centroNombre}.`);
+    if (row.CE_latitud === null || row.CE_latitud === undefined)
+      errors.push(`Falta el campo CE_latitud en ${centroNombre}.`);
+    if (!row.L_nombre)
+      errors.push(`Falta el campo L_nombre en ${centroNombre}.`);
+    if (!row.P_codigo)
+      errors.push(`Falta el campo P_codigo en ${centroNombre}.`);
+    if (!row.P_nombre)
+      errors.push(`Falta el campo P_nombre en ${centroNombre}.`);
+
+    return errors;
   }
 
   private getTipo(tipo: string): string {
@@ -57,22 +123,6 @@ class VlcMapper {
       case "OTROS":
         return "Otros";
     }
-  }
-
-  private getLongitud(
-    tipo_via: string,
-    direccion: string,
-    numero: number
-  ): string {
-    return "";
-  }
-
-  private getLatitud(
-    tipo_via: string,
-    direccion: string,
-    numero: number
-  ): string {
-    return "";
   }
 
   private getProvinceCode(codigo_postal: string): number {
@@ -96,3 +146,5 @@ class VlcMapper {
     }
   }
 }
+
+export default VlcMapper;

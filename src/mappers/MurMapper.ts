@@ -32,7 +32,7 @@ class MurMapper {
         CE_latitud: row["geo-referencia"] ? row["geo-referencia"].lat : null,
         CE_telefono: row.telcen,
         CE_descripcion: row.presentacionCorta,
-        L_codigo: -1,
+        L_codigo: row.cpcen,
         L_nombre: row.loccen,
         P_codigo: 30,
         P_nombre: "Murcia",
@@ -94,8 +94,6 @@ class MurMapper {
       errors.push(`Falta el campo CE_longitud en ${centroNombre}.`);
     if (!row.CE_latitud)
       errors.push(`Falta el campo CE_latitud en ${centroNombre}.`);
-    if (!row.CE_telefono || row.CE_telefono.length !== 9)
-      errors.push(`El campo CE_telefono es inválido en ${centroNombre}.`);
     if (!row.L_nombre)
       errors.push(`Falta el campo L_nombre en ${centroNombre}.`);
     if (!row.P_codigo)

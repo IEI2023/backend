@@ -29,10 +29,10 @@ export class CentroEducativo {
   @Column()
   latitud: number;
 
-  @Column()
+  @Column({ nullable: true })
   telefono: string;
 
-  @Column()
+  @Column({ nullable: true })
   descripcion: string;
 
   @Column()

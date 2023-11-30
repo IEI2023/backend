@@ -112,7 +112,11 @@ export const add = async (req: Request, res: Response) => {
   const url = process.env.WRAPPER_URL + ":3001" + "/jsonFromBody";
 
   try {
-    const data = await axios.post(url, req.body);
+    const data = await axios.post(url, req.body, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const jsonData = data.data;
 

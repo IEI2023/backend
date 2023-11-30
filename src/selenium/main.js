@@ -11,7 +11,10 @@ async function getCoordinates(address) {
 
     await driver.wait(until.elementLocated(By.id("address")), 10000);
 
-    while (true) {
+    for (let i = 0; i < 10; i++) {
+      console.log(
+        "Observando cambios de valores... intento " + (i + 1) + "/10"
+      );
       previus_lat = await driver
         .findElement(By.id("latitude"))
         .getAttribute("value");
@@ -19,7 +22,9 @@ async function getCoordinates(address) {
         .findElement(By.id("longitude"))
         .getAttribute("value");
 
-      if (previus_lat != "" && previus_lon != "") break;
+      if (previus_lat !== "" && previus_lon !== "") {
+        break;
+      }
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
@@ -35,26 +40,18 @@ async function getCoordinates(address) {
       )
       .click();
 
-    while (true) {
-      lat = await driver.findElement(By.id("latitude")).getAttribute("value");
-      lon = await driver.findElement(By.id("longitude")).getAttribute("value");
+    console.log("Obteniendo nuevas coordenadas...");
+    lat = await driver.findElement(By.id("latitude")).getAttribute("value");
+    lon = await driver.findElement(By.id("longitude")).getAttribute("value");
 
-      if (lat != previus_lat && lon != previus_lon && lat != "" && lon != "") {
-        break;
-      }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
+    return { lat, lon };
   } catch (error) {
     console.log(error);
   } finally {
     await driver.quit();
-    return await { lat, lon };
   }
 }
 
-// Ejemplo de uso
-(async () => {
-  const coordinates = await getCoordinates("Lima, Peru");
-  console.log(coordinates);
-})();
+module.exports = { getCoordinates };

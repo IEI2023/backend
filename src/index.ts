@@ -8,7 +8,7 @@ AppDataSource.initialize()
   .then(async () => {
     // create express app
     const app = express();
-    app.use(bodyParser.json());
+    app.use(bodyParser.text());
 
     // Routes
     app.use(router);
