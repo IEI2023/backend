@@ -3,6 +3,7 @@ const chrome = require("selenium-webdriver/chrome");
 
 async function getCoordinates(address) {
   // Configurar el navegador
+
   const driver = await new Builder().forBrowser("chrome").build();
   let lat, lon, previus_lat, previus_lon; // Declarar las variables aquí
 
@@ -26,7 +27,11 @@ async function getCoordinates(address) {
         break;
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (i == 9) {
+        throw new Error("No se han podido obtener las coordenadas");
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
     }
 
     await driver.findElement(By.id("address")).clear();
@@ -35,7 +40,7 @@ async function getCoordinates(address) {
     await driver
       .findElement(
         By.xpath(
-          "/html/body/div[2]/div[2]/div[3]/div[1]/form[1]/div[2]/div/button"
+          "//*[@id='wrap']/div[2]/div[3]/div[1]/form[1]/div[2]/div/button"
         )
       )
       .click();
@@ -65,7 +70,11 @@ async function getCoordinates(address) {
         break;
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (i == 9) {
+        throw new Error("No se han podido obtener las coordenadas");
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
     }
 
     return { lat, lon };
@@ -79,11 +88,8 @@ async function getCoordinates(address) {
 module.exports = { getCoordinates };
 
 //Ejemplo de uso
-/*
+
 (async () => {
-  const coordinates = await getCoordinates(
-    "Camino de la Silla, 30835 Alcantarilla, España"
-  );
+  const coordinates = await getCoordinates("Lima Metropolitana, Lima, Perú");
   console.log(coordinates);
 })();
-*/
