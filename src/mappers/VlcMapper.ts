@@ -16,15 +16,24 @@ class VlcMapper {
     data: any[],
     result: { data: any[]; errors: any[] }
   ) {
+<<<<<<< HEAD
     let mappedData = [];
     for (const row of data) {
+=======
+    const mappedData = [];
+    for (const row of data) {
+      console.log(`${row.TIPO_VIA} ${row.DIRECCION} ${row.NUMERO}`);
+>>>>>>> a54f026c95a13cc49817c0397c7a3bee98b50893
       let coordinatesPromise = null;
       (async () => {
         coordinatesPromise = getCoordinates(
           `${row.TIPO_VIA} ${row.DIRECCION} ${row.NUMERO}`
         );
       })();
+<<<<<<< HEAD
 
+=======
+>>>>>>> a54f026c95a13cc49817c0397c7a3bee98b50893
       const coordinates = await coordinatesPromise;
 
       if (!coordinates) {
@@ -55,7 +64,11 @@ class VlcMapper {
         row.DENOMINACION
       );
       if (validationErrors.length === 0) {
+<<<<<<< HEAD
         return mappedData.push(mappedRow);
+=======
+        mappedData.push(mappedRow);
+>>>>>>> a54f026c95a13cc49817c0397c7a3bee98b50893
       } else {
         for (const error of validationErrors) {
           result.errors.push(error);

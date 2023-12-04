@@ -97,7 +97,7 @@ export const getAll = async (req: Request, res: Response) => {
 
     const response = {
       successCount,
-      errorCount,
+      errorCount: allErrors.length,
       errors: allErrors,
     };
 

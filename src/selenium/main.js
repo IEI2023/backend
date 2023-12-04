@@ -5,7 +5,10 @@ async function getCoordinates(address) {
   // Configurar el navegador
 
   const driver = await new Builder().forBrowser("chrome").build();
-  let lat, lon, previus_lat, previus_lon; // Declarar las variables aquí
+  let lat = "";
+  let lon = "";
+  let previus_lat = "";
+  let previus_lon = ""; // Declarar las variables aquí
 
   try {
     await driver.get("https://www.coordenadas-gps.com/");
@@ -26,7 +29,7 @@ async function getCoordinates(address) {
       }
 
       if (i == 9) {
-        throw new Error("No se han podido obtener las coordenadas");
+        //throw new Error("No se han podido obtener las coordenadas");
       } else {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
@@ -68,8 +71,13 @@ async function getCoordinates(address) {
         break;
       }
 
+<<<<<<< HEAD
       if (i == 99) {
         throw new Error("No se han podido obtener las coordenadas");
+=======
+      if (i == 9) {
+        //throw new Error("No se han podido obtener las coordenadas");
+>>>>>>> a54f026c95a13cc49817c0397c7a3bee98b50893
       } else {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
@@ -84,3 +92,14 @@ async function getCoordinates(address) {
 }
 
 module.exports = { getCoordinates };
+<<<<<<< HEAD
+=======
+
+//Ejemplo de uso
+/*
+(async () => {
+  const coordinates = await getCoordinates("Lima Metropolitana, Lima, Perú");
+  console.log(coordinates);
+})();
+*/
+>>>>>>> a54f026c95a13cc49817c0397c7a3bee98b50893
