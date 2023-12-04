@@ -13,9 +13,7 @@ async function getCoordinates(address) {
     await driver.wait(until.elementLocated(By.id("address")), 10000);
 
     for (let i = 0; i < 10; i++) {
-      console.log(
-        "Observando cambios de valores... intento " + (i + 1) + "/10"
-      );
+      console.log("Introduciendo datos... intento " + (i + 1) + "/10");
       previus_lat = await driver
         .findElement(By.id("latitude"))
         .getAttribute("value");
@@ -40,7 +38,7 @@ async function getCoordinates(address) {
     await driver
       .findElement(
         By.xpath(
-          "//*[@id='wrap']/div[2]/div[3]/div[1]/form[1]/div[2]/div/button"
+          '//*[@id="wrap"]/div[2]/div[3]/div[1]/form[1]/div[2]/div/button'
         )
       )
       .click();
@@ -53,9 +51,9 @@ async function getCoordinates(address) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     */
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 100; i++) {
       console.log(
-        "Observando cambios de valores... intento " + (i + 1) + "/10"
+        "Observando cambios de valores... intento " + (i + 1) + "/100"
       );
 
       lat = await driver.findElement(By.id("latitude")).getAttribute("value");
@@ -70,7 +68,7 @@ async function getCoordinates(address) {
         break;
       }
 
-      if (i == 9) {
+      if (i == 99) {
         throw new Error("No se han podido obtener las coordenadas");
       } else {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -86,10 +84,3 @@ async function getCoordinates(address) {
 }
 
 module.exports = { getCoordinates };
-
-//Ejemplo de uso
-
-(async () => {
-  const coordinates = await getCoordinates("Lima Metropolitana, Lima, Perú");
-  console.log(coordinates);
-})();
