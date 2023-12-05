@@ -24,10 +24,10 @@ export class CentroEducativo {
   codigoPostal: string;
 
   @Column()
-  longitud: number;
+  longitud: string;
 
   @Column()
-  latitud: number;
+  latitud: string;
 
   @Column({ nullable: true })
   telefono: string;

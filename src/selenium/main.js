@@ -54,7 +54,7 @@ async function getCoordinates(address) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     */
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 10; i++) {
       console.log(
         "Observando cambios de valores... intento " + (i + 1) + "/100"
       );
@@ -71,13 +71,8 @@ async function getCoordinates(address) {
         break;
       }
 
-<<<<<<< HEAD
-      if (i == 99) {
-        throw new Error("No se han podido obtener las coordenadas");
-=======
       if (i == 9) {
-        //throw new Error("No se han podido obtener las coordenadas");
->>>>>>> a54f026c95a13cc49817c0397c7a3bee98b50893
+        throw new Error("No se han podido obtener las coordenadas");
       } else {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
@@ -92,14 +87,3 @@ async function getCoordinates(address) {
 }
 
 module.exports = { getCoordinates };
-<<<<<<< HEAD
-=======
-
-//Ejemplo de uso
-/*
-(async () => {
-  const coordinates = await getCoordinates("Lima Metropolitana, Lima, Perú");
-  console.log(coordinates);
-})();
-*/
->>>>>>> a54f026c95a13cc49817c0397c7a3bee98b50893
