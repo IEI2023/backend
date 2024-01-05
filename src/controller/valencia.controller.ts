@@ -28,30 +28,30 @@ export const getAll = async (req: Request, res: Response) => {
     for (const centro of vlcMapper.data) {
       try {
         // Comprobar si exite la provincia en la base de datos
-        const provincia = await provinciaRepository.findOne({
+        let provincia = await provinciaRepository.findOne({
           where: { nombre: centro.P_nombre },
         });
 
         if (!provincia) {
           // Si no existe se crea
-          const provincia = new Provincia();
-          provincia.nombre = centro.P_nombre;
-          provincia.codigo = centro.P_codigo;
-          await provinciaRepository.save(provincia);
+          const newProvincia = new Provincia();
+          newProvincia.nombre = centro.P_nombre;
+          newProvincia.codigo = centro.P_codigo;
+          provincia = await provinciaRepository.save(newProvincia);
         }
 
         // Comprobar si exite la localidad en la base de datos
-        const localidad = await localidadRepository.findOne({
+        let localidad = await localidadRepository.findOne({
           where: { nombre: centro.L_nombre },
         });
 
         if (!localidad) {
           // Si no existe se crea
-          const localidad = new Localidad();
-          localidad.nombre = centro.L_nombre;
-          localidad.codigo = centro.L_codigo;
-          localidad.provincia = provincia;
-          await localidadRepository.save(localidad);
+          const newLocalidad = new Localidad();
+          newLocalidad.nombre = centro.L_nombre;
+          newLocalidad.codigo = centro.L_codigo;
+          newLocalidad.provincia = provincia;
+          localidad = await localidadRepository.save(newLocalidad);
         }
 
         // Comprobar si exite el centro en la base de datos
@@ -121,36 +121,35 @@ export const add = async (req: Request, res: Response) => {
     const vlcMapper = await new VlcMapper().mapData(jsonData);
 
     let successCount = 0;
-    let errorCount = 0;
     const errorCentros: any[] = [];
 
     for (const centro of vlcMapper.data) {
       try {
         // Comprobar si exite la provincia en la base de datos
-        const provincia = await provinciaRepository.findOne({
+        let provincia = await provinciaRepository.findOne({
           where: { nombre: centro.P_nombre },
         });
 
         if (!provincia) {
           // Si no existe se crea
-          const provincia = new Provincia();
-          provincia.nombre = centro.P_nombre;
-          provincia.codigo = centro.P_codigo;
-          await provinciaRepository.save(provincia);
+          const newProvincia = new Provincia();
+          newProvincia.nombre = centro.P_nombre;
+          newProvincia.codigo = centro.P_codigo;
+          provincia = await provinciaRepository.save(newProvincia);
         }
 
         // Comprobar si exite la localidad en la base de datos
-        const localidad = await localidadRepository.findOne({
+        let localidad = await localidadRepository.findOne({
           where: { nombre: centro.L_nombre },
         });
 
         if (!localidad) {
           // Si no existe se crea
-          const localidad = new Localidad();
-          localidad.nombre = centro.L_nombre;
-          localidad.codigo = centro.L_codigo;
-          localidad.provincia = provincia;
-          await localidadRepository.save(localidad);
+          const newLocalidad = new Localidad();
+          newLocalidad.nombre = centro.L_nombre;
+          newLocalidad.codigo = centro.L_codigo;
+          newLocalidad.provincia = provincia;
+          localidad = await localidadRepository.save(newLocalidad);
         }
 
         // Comprobar si exite el centro en la base de datos
@@ -178,14 +177,12 @@ export const add = async (req: Request, res: Response) => {
 
           successCount++;
         } else {
-          errorCount++;
           errorCentros.push(
             "Centro educativo existente en la base de datos: " +
               centro.CE_nombre
           );
         }
       } catch (error) {
-        errorCount++;
         errorCentros.push(centro);
         console.log(error);
       }

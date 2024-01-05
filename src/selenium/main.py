@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
+
 def getCoordinates(address):
     # Configurar el navegador
     options = webdriver.ChromeOptions()
@@ -55,5 +56,12 @@ def getCoordinates(address):
     finally:
         driver.quit()
 
+# Agrega código para ejecutar por defecto cuando el script de Python es llamado directamente
+if __name__ == "__main__":
+    # Ejemplo: ejecutar getCoordinates con una dirección predeterminada
+    default_address = "Calle de la Princesa, 1, Madrid"
+    default_coordinates = getCoordinates(default_address)
+    print(f"Coordenadas predeterminadas para '{default_address}': {default_coordinates}")
 
-print (getCoordinates("Calle de la Princesa, 1, Madrid"))
+
+# print (getCoordinates("Calle de la Princesa, 1, Madrid"))

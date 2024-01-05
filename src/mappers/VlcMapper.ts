@@ -16,9 +16,8 @@ class VlcMapper {
     data: any[],
     result: { data: any[]; errors: any[] }
   ) {
-    const mappedData = [];
+    let mappedData = [];
     for (const row of data) {
-      console.log(`${row.TIPO_VIA} ${row.DIRECCION} ${row.NUMERO}`);
       let coordinatesPromise = null;
       (async () => {
         coordinatesPromise = getCoordinates(

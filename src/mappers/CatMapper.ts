@@ -15,33 +15,39 @@ class CatMapper {
     result: { data: any[]; errors: any[] }
   ) {
     const mappedData = data.map((row) => {
-      const mappedRow = {
-        CE_nombre: row.denominaci_completa[0],
-        CE_tipo: this.getTipo(row.nom_naturalesa[0]),
-        CE_direccion: row.adre_a[0],
-        CE_codigo_postal: row.codi_postal[0],
-        CE_longitud: row.coordenades_geo_x[0],
-        CE_latitud: row.coordenades_geo_y[0],
-        // No tiene telefono
-        CE_descripcion: row.denominaci_completa[0],
-        L_codigo: row.codi_postal[0],
-        L_nombre: row.nom_municipi[0],
-        P_codigo: this.getCodigoProvincia(row.codi_postal[0]),
-        P_nombre: this.getNombreProvincia(row.codi_postal[0]),
-      };
+      try {
+        const mappedRow = {
+          CE_nombre: row.denominaci_completa[0],
+          CE_tipo: this.getTipo(row.nom_naturalesa[0]),
+          CE_direccion: row.adre_a[0],
+          CE_codigo_postal: row.codi_postal[0],
+          CE_longitud: row.coordenades_geo_x[0],
+          CE_latitud: row.coordenades_geo_y[0],
+          // No tiene telefono
+          CE_descripcion: row.denominaci_completa[0],
+          L_codigo: row.codi_postal[0],
+          L_nombre: row.nom_municipi[0],
+          P_codigo: this.getCodigoProvincia(row.codi_postal[0]),
+          P_nombre: this.getNombreProvincia(row.codi_postal[0]),
+        };
 
-      // Validaciones
-      const validationErrors = this.validateMappedRow(
-        mappedRow,
-        row.denominaci_completa[0]
-      );
-      if (validationErrors.length === 0) {
-        return mappedRow;
-      } else {
-        for (const error of validationErrors) {
-          result.errors.push(error);
+        // Validaciones
+        const validationErrors = this.validateMappedRow(
+          mappedRow,
+          row.denominaci_completa[0]
+        );
+        if (validationErrors.length === 0) {
+          return mappedRow;
+        } else {
+          for (const error of validationErrors) {
+            result.errors.push(error);
+          }
+          return null;
         }
-        return null;
+      } catch (error) {
+        result.errors.push(
+          `Centro educativo incompleto en el registro: ${row.denominaci_completa[0]}`
+        );
       }
     });
 
