@@ -18,52 +18,100 @@ export const get = async (req: Request, res: Response) => {
 
   const { localidad, cp, provincia, tipo } = body;
 
-  if (!localidad && !cp && !provincia && !tipo) {
-    return res.status(400).json({ message: "Bad Request" });
-  }
-
   const centros = await centroEducativoRepository.find({
-    where: {
-      codigoPostal: cp,
-      tipo: tipo,
-    },
+    where: { tipo: tipo },
     relations: { localidad: true },
   });
 
-  if (!centros.length) {
-    return res.status(404).json({});
+  let filteredCentros = centros;
+  // Filter centros with same CP
+  if (cp) {
+    filteredCentros = filteredCentros.filter((centro) => {
+      return centro.codigoPostal === cp;
+    });
   }
 
+  // Filter centros with same localidad
   if (localidad) {
-    const centrosLocalidadFiltered = centros.filter((centro) =>
-      centro.localidad.nombre.includes(localidad)
-    );
-
-    if (!centrosLocalidadFiltered.length) {
-      return res.status(404).json({});
-    }
-
-    if (provincia) {
-      const filteredCentros = [];
-
-      for (let centro of centrosLocalidadFiltered) {
-        const provinciaObject = await localidadRepository.find({
-          where: { nombre: Like(centro.localidad.nombre) },
-          relations: ["provincia"],
-        });
-
-        // Si se encuentra la provincia y coincide con la proporcionada
-        if (
-          provinciaObject.length > 0 &&
-          provinciaObject[0].provincia.nombre.includes(provincia)
-        ) {
-          filteredCentros.push(centro);
-        }
-      }
-
-      return res.status(200).json(filteredCentros);
-    }
+    filteredCentros = filteredCentros.filter((centro) => {
+      return centro.localidad.nombre.includes(localidad);
+    });
   }
 
-  return res.status(500).json({ message: "Internal Server Error" });
+  // Filter centros with same provincia
+  if (provincia) {
+    const centrosWithProvince = [];
+    for (let centro of filteredCentros) {
+      let localidad = await localidadRepository.find({
+        where: { nombre: Like(centro.localidad.nombre) },
+        relations: { provincia: true },
+      });
+
+      centrosWithProvince.push({
+        nombre: centro.nombre,
+        direccion: centro.direccion,
+        codigoPostal: centro.codigoPostal,
+        longitud: centro.longitud,
+        latitud: centro.latitud,
+        telefono: centro.telefono,
+        descripcion: centro.descripcion,
+        tipo: centro.tipo,
+        localidad: centro.localidad.nombre,
+        provincia: localidad[0].provincia.nombre,
+      });
+    }
+    return res.status(200).json(centrosWithProvince);
+  } else {
+    const formattedCentros = [];
+
+    for (let centro of filteredCentros) {
+      const localidad = await localidadRepository.find({
+        where: { nombre: Like(centro.localidad.nombre) },
+        relations: { provincia: true },
+      });
+
+      formattedCentros.push({
+        nombre: centro.nombre,
+        direccion: centro.direccion,
+        codigoPostal: centro.codigoPostal,
+        longitud: centro.longitud,
+        latitud: centro.latitud,
+        telefono: centro.telefono,
+        descripcion: centro.descripcion,
+        tipo: centro.tipo,
+        localidad: centro.localidad.nombre,
+        provincia: localidad[0].provincia.nombre,
+      });
+    }
+
+    return res.status(200).json(formattedCentros);
+  }
+};
+
+export const getAll = async (req: Request, res: Response) => {
+  const centros = await centroEducativoRepository.find({
+    relations: ["localidad"],
+  });
+
+  const formattedCentros = [];
+
+  for (let centro of centros) {
+    const localidad = await localidadRepository.find({
+      where: { nombre: Like(centro.localidad.nombre) },
+      relations: { provincia: true },
+    });
+
+    formattedCentros.push({
+      nombre: centro.nombre,
+      tipo: centro.tipo,
+      direccion: centro.direccion,
+      codigoPostal: centro.codigoPostal,
+      longitud: centro.longitud,
+      latitud: centro.latitud,
+      localidad: localidad[0].nombre,
+      provincia: localidad[0].provincia.nombre,
+    });
+  }
+
+  return res.status(200).json(formattedCentros);
 };

@@ -1,5 +1,6 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
+import * as cors from "cors";
 
 import { AppDataSource } from "./data-source";
 import router from "./routes/index";
@@ -11,6 +12,7 @@ AppDataSource.initialize()
     app.use(bodyParser.text());
 
     // Routes
+    app.use(cors()); // Habilitar CORS para todos los orígenes
     app.use(router);
 
     // start express server
