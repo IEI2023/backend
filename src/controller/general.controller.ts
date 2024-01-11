@@ -34,7 +34,7 @@ export const get = async (req: Request, res: Response) => {
   // Filter centros with same localidad
   if (localidad) {
     filteredCentros = filteredCentros.filter((centro) => {
-      return centro.localidad.nombre.includes(localidad);
+      return centro.localidad.nombre.includes(localidad.toLowerCase());
     });
   }
 
@@ -47,18 +47,19 @@ export const get = async (req: Request, res: Response) => {
         relations: { provincia: true },
       });
 
-      centrosWithProvince.push({
-        nombre: centro.nombre,
-        direccion: centro.direccion,
-        codigoPostal: centro.codigoPostal,
-        longitud: centro.longitud,
-        latitud: centro.latitud,
-        telefono: centro.telefono,
-        descripcion: centro.descripcion,
-        tipo: centro.tipo,
-        localidad: centro.localidad.nombre,
-        provincia: localidad[0].provincia.nombre,
-      });
+      if (localidad[0].provincia.nombre.includes(provincia.toLowerCase()))
+        centrosWithProvince.push({
+          nombre: centro.nombre,
+          direccion: centro.direccion,
+          codigoPostal: centro.codigoPostal,
+          longitud: centro.longitud,
+          latitud: centro.latitud,
+          telefono: centro.telefono,
+          descripcion: centro.descripcion,
+          tipo: centro.tipo,
+          localidad: centro.localidad.nombre,
+          provincia: localidad[0].provincia.nombre,
+        });
     }
     return res.status(200).json(centrosWithProvince);
   } else {

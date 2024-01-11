@@ -35,7 +35,7 @@ export const getAll = async (req: Request, res: Response) => {
         if (!provincia) {
           // Si no existe se crea
           const newProvincia = new Provincia();
-          newProvincia.nombre = centro.P_nombre;
+          newProvincia.nombre = centro.P_nombre.toLowerCase();
           newProvincia.codigo = centro.P_codigo;
           provincia = await provinciaRepository.save(newProvincia);
         }
@@ -48,7 +48,7 @@ export const getAll = async (req: Request, res: Response) => {
         if (!localidad) {
           // Si no existe se crea
           const newLocalidad = new Localidad();
-          newLocalidad.nombre = centro.L_nombre;
+          newLocalidad.nombre = centro.L_nombre.toLowerCase();
           newLocalidad.codigo = centro.L_codigo;
           newLocalidad.provincia = provincia;
           localidad = await localidadRepository.save(newLocalidad);
@@ -93,6 +93,7 @@ export const getAll = async (req: Request, res: Response) => {
     }
 
     // Incluir errores generales en la respuesta
+    console.log(errorCentros);
     const allErrors = [...murMapper.errors, ...errorCentros];
 
     const response = {
@@ -136,7 +137,7 @@ export const add = async (req: Request, res: Response) => {
         if (!provincia) {
           // Si no existe se crea
           const newProvincia = new Provincia();
-          newProvincia.nombre = centro.P_nombre;
+          newProvincia.nombre = centro.P_nombre.toLowerCase();
           newProvincia.codigo = centro.P_codigo;
           provincia = await provinciaRepository.save(newProvincia);
         }
@@ -149,7 +150,7 @@ export const add = async (req: Request, res: Response) => {
         if (!localidad) {
           // Si no existe se crea
           const newLocalidad = new Localidad();
-          newLocalidad.nombre = centro.L_nombre;
+          newLocalidad.nombre = centro.L_nombre.toLowerCase();
           newLocalidad.codigo = centro.L_codigo;
           newLocalidad.provincia = provincia;
           localidad = await localidadRepository.save(newLocalidad);
